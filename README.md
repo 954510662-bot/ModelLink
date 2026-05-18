@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="assets/modelink-logo-full.svg" alt="ModelLink Logo" width="400" height="128">
-
-# ModelLink
+<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); padding: 40px; border-radius: 16px; margin: 20px 0; display: inline-block;">
+  <img src="assets/modelink-logo-full.svg" alt="ModelLink Logo" width="400" height="128">
+</div>
 
 A local proxy that allows AI coding tools to transparently use any third-party model
 
