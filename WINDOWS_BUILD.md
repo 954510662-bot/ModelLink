@@ -1,23 +1,23 @@
-# ModelLink Windows 版本构建指南
+# ModelLink Windows Build Guide
 
-## 方案一：在 WSL 中交叉编译（推荐）
+## Option 1: Cross-compile in WSL (Recommended)
 
-### 1. 安装交叉编译工具链
+### 1. Install cross-compilation toolchain
 
-在 WSL 中运行：
+Run in WSL:
 
 ```bash
-# 安装 MinGW-w64
+# Install MinGW-w64
 sudo apt update
 sudo apt install -y gcc-mingw-w64-x86-64
 
-# 添加 Windows 目标
+# Add Windows target
 rustup target add x86_64-pc-windows-gnu
 ```
 
-### 2. 配置 Cargo
+### 2. Configure Cargo
 
-在项目根目录创建 `.cargo/config.toml`：
+Create `.cargo/config.toml` in project root:
 
 ```toml
 [target.x86_64-pc-windows-gnu]
@@ -25,43 +25,43 @@ linker = "x86_64-w64-mingw32-gcc"
 ar = "x86_64-w64-mingw32-gcc-ar"
 ```
 
-### 3. 构建 Windows 版本
+### 3. Build Windows version
 
 ```bash
 cd /mnt/d/WSL-Windows.Projects/ModelLink
 cargo build --release --target x86_64-pc-windows-gnu
 ```
 
-构建完成后，二进制文件位于：
+After build, binary is located at:
 `target/x86_64-pc-windows-gnu/release/model-link.exe`
 
 ---
 
-## 方案二：在 Windows 原生环境中构建
+## Option 2: Build natively on Windows
 
-### 1. 安装 Rust
+### 1. Install Rust
 
-访问 https://rustup.rs/ 下载并安装 Rust for Windows
+Visit https://rustup.rs/ to download and install Rust for Windows
 
-### 2. 安装 Visual Studio Build Tools
+### 2. Install Visual Studio Build Tools
 
-下载并安装：https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022
+Download and install: https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022
 
-选择 "使用 C++ 的桌面开发" 工作负载
+Select "Desktop development with C++" workload
 
-### 3. 构建
+### 3. Build
 
-在 PowerShell 中运行：
+Run in PowerShell:
 
 ```powershell
 cd D:\WSL-Windows.Projects\ModelLink
 cargo build --release
 ```
 
-### 4. 如果遇到代理问题
+### 4. If encountering proxy issues
 
 ```powershell
-# 临时禁用代理
+# Temporarily disable proxy
 $env:HTTP_PROXY=""
 $env:HTTPS_PROXY=""
 cargo build --release
@@ -69,11 +69,11 @@ cargo build --release
 
 ---
 
-## 方案三：使用 GitHub Actions 自动构建（最简单）
+## Option 3: GitHub Actions Auto-build (Easiest)
 
-### 创建 GitHub Actions 工作流
+### Create GitHub Actions workflow
 
-在项目中创建 `.github/workflows/build.yml`：
+Create `.github/workflows/build.yml` in project:
 
 ```yaml
 name: Build ModelLink
@@ -121,94 +121,94 @@ jobs:
           path: target/${{ matrix.target }}/release/model-link${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 ```
 
-### 触发构建
+### Trigger build
 
-1. 推送到 GitHub
-2. 创建一个 tag：`git tag v0.1.0 && git push origin v0.1.0`
-3. GitHub Actions 会自动构建所有平台版本
-4. 在 Actions 页面下载构建好的二进制文件
+1. Push to GitHub
+2. Create a tag: `git tag v0.1.0 && git push origin v0.1.0`
+3. GitHub Actions will automatically build all platform versions
+4. Download built binaries from Actions page
 
 ---
 
-## 打包发布
+## Packaging & Release
 
-### Windows 版本打包
+### Windows version packaging
 
-1. 复制二进制文件
-2. 创建 ZIP 压缩包
+1. Copy binary file
+2. Create ZIP archive
 
 ```powershell
 Compress-Archive -Path target\release\model-link.exe -DestinationPath model-link-windows-x64.zip
 ```
 
-### 创建发布说明模板
+### Create release notes template
 
 ```markdown
 # ModelLink v0.1.0
 
-## 下载
+## Downloads
 
 - [Windows x64](model-link-windows-x64.zip)
 - [Linux x64](model-link-linux-x64.tar.gz)
 - [macOS x64](model-link-macos-x64.tar.gz)
 
-## 快速开始
+## Quick Start
 
 ### Windows
 
 ```powershell
-# 解压
+# Extract
 Expand-Archive model-link-windows-x64.zip -DestinationPath .\model-link
 
-# 生成配置
+# Generate config
 .\model-link\model-link.exe config init
 
-# 启动服务
+# Start service
 .\model-link\model-link.exe start
 ```
 
-## 功能特性
+## Features
 
-- ✅ OpenAI/Anthropic 协议转换
-- ✅ 配置热加载
-- ✅ 健康检查
-- ✅ Prometheus 指标
-- ✅ 故障转移
-- ✅ 配置备份与迁移
-- ✅ Mock/离线模式
-- ✅ Shell 补全
-- ✅ 在线更新 (可选)
+- ✅ OpenAI/Anthropic protocol conversion
+- ✅ Hot config reloading
+- ✅ Health checks
+- ✅ Prometheus metrics
+- ✅ Failover
+- ✅ Config backup & migration
+- ✅ Mock/offline mode
+- ✅ Shell completion
+- ✅ Auto-update (optional)
 ```
 
 ---
 
-## 验证构建
+## Verify Build
 
-### 基本功能测试
+### Basic functionality test
 
 ```powershell
-# 查看版本
+# Check version
 .\model-link.exe version
 
-# 诊断检查
+# Run diagnostics
 .\model-link.exe doctor
 
-# 生成配置
+# Generate config
 .\model-link.exe config init
 
-# 验证配置
+# Validate config
 .\model-link.exe config validate
 ```
 
 ---
 
-## 常见问题
+## FAQ
 
-### Q: 编译时遇到 proc-macro 相关错误？
-A: 尝试更新 Rust：`rustup update`，然后清理缓存：`cargo clean`
+### Q: Encountering proc-macro related errors during compilation?
+A: Try updating Rust: `rustup update`, then clean cache: `cargo clean`
 
-### Q: 网络问题导致依赖下载失败？
-A: 配置 Cargo 使用国内镜像源，在 `~/.cargo/config.toml` 中添加：
+### Q: Network issues causing dependency download failures?
+A: Configure Cargo to use domestic mirror, add to `~/.cargo/config.toml`:
 
 ```toml
 [source.crates-io]
@@ -218,5 +218,5 @@ replace-with = 'ustc'
 registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
 ```
 
-### Q: 缺少 Visual Studio Build Tools？
-A: 下载并安装：https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022
+### Q: Missing Visual Studio Build Tools?
+A: Download and install: https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022

@@ -1,59 +1,59 @@
-# ModelLink 构建指南
+# ModelLink Build Guide
 
-## 构建要求
+## Requirements
 
 - Rust 1.70+
 - Cargo
 
-## 快速开始
+## Quick Start
 
-### 1. 克隆仓库
+### 1. Clone repository
 
 ```bash
 git clone https://github.com/954510662-bot/ModelLink.git
 cd ModelLink
 ```
 
-### 2. 开发构建
+### 2. Development build
 
 ```bash
 cargo build
 ```
 
-### 3. 发布构建
+### 3. Release build
 
 ```bash
 cargo build --release
 ```
 
-### 4. 运行测试
+### 4. Run tests
 
 ```bash
 cargo test
 ```
 
-## 功能特性
+## Features
 
-### 默认功能
+### Default features
 
-- 基础代理功能
-- 配置热加载
-- 健康检查
-- Prometheus指标
-- 配置版本迁移
-- 自动备份
-- Mock/离线模式
-- Shell补全
+- Core proxy functionality
+- Hot config reloading
+- Health checks
+- Prometheus metrics
+- Config version migration
+- Automatic backups
+- Mock/offline mode
+- Shell completion
 
-### 可选功能
+### Optional features
 
-#### 在线更新功能
+#### Auto-update feature
 
 ```bash
 cargo build --release --features update
 ```
 
-## 跨平台构建
+## Cross-platform builds
 
 ### Windows (x86_64)
 
@@ -79,39 +79,39 @@ cargo build --release --target x86_64-apple-darwin
 cargo build --release --target aarch64-apple-darwin
 ```
 
-## 使用方式
+## Usage
 
-### 1. 生成配置文件
+### 1. Generate config file
 
 ```bash
 model-link config init
 ```
 
-### 2. 启动服务
+### 2. Start service
 
 ```bash
 model-link start
 ```
 
-### 3. 验证配置
+### 3. Validate config
 
 ```bash
 model-link config validate
 ```
 
-### 4. 诊断工具
+### 4. Diagnostic tool
 
 ```bash
 model-link doctor
 ```
 
-### 5. 查看版本
+### 5. Check version
 
 ```bash
 model-link version
 ```
 
-### 6. Shell补全 (可选)
+### 6. Shell completion (optional)
 
 #### Bash
 
@@ -137,90 +137,90 @@ model-link completions --shell fish > ~/.config/fish/completions/model-link.fish
 model-link completions --shell powershell | Out-File -Encoding utf8 $PROFILE
 ```
 
-### 7. 在线更新 (需要启用 update feature)
+### 7. Auto-update (requires update feature)
 
 ```bash
-# 检查更新
+# Check for updates
 model-link update --check
 
-# 更新到最新版本
+# Update to latest version
 model-link update
 
-# 无需确认直接更新
+# Update without confirmation
 model-link update --yes
 ```
 
-## 配置说明
+## Configuration
 
-配置文件默认位置：
+Default config file locations:
 
 - Windows: `%APPDATA%\model-link\config.yaml`
 - Linux/macOS: `~/.config/model-link/config.yaml`
 
-查看配置文件位置：
+View config file location:
 
 ```bash
 model-link config path
 ```
 
-## 项目结构
+## Project Structure
 
 ```
 ModelLink/
 ├── src/
 │   ├── bin/
-│   │   └── model_link.rs       # 主程序入口
-│   ├── audit.rs                # 审计日志
-│   ├── backup.rs               # 配置备份
-│   ├── cli.rs                  # 命令行接口
-│   ├── config.rs               # 配置管理
-│   ├── config_watcher.rs       # 配置热加载
-│   ├── errors.rs               # 错误处理
-│   ├── failover.rs             # 故障转移
-│   ├── health.rs               # 健康检查
-│   ├── lib.rs                  # 库入口
-│   ├── metrics.rs              # Prometheus指标
-│   ├── migration.rs            # 配置迁移
-│   ├── mock.rs                 # Mock/离线模式
-│   ├── models.rs               # 模型定义
-│   ├── proxy.rs                # 代理转发
-│   ├── server.rs               # 服务器
-│   ├── stream.rs               # 流式处理
-│   ├── translator.rs           # 参数转换
-│   └── wizard.rs               # 配置向导
+│   │   └── model_link.rs       # Main entry point
+│   ├── audit.rs                # Audit logging
+│   ├── backup.rs               # Config backup
+│   ├── cli.rs                  # Command-line interface
+│   ├── config.rs               # Config management
+│   ├── config_watcher.rs       # Hot config reloading
+│   ├── errors.rs               # Error handling
+│   ├── failover.rs             # Failover
+│   ├── health.rs               # Health checks
+│   ├── lib.rs                  # Library entry
+│   ├── metrics.rs              # Prometheus metrics
+│   ├── migration.rs            # Config migration
+│   ├── mock.rs                 # Mock/offline mode
+│   ├── models.rs               # Model definitions
+│   ├── proxy.rs                # Proxy forwarding
+│   ├── server.rs               # Server
+│   ├── stream.rs               # Streaming
+│   ├── translator.rs           # Parameter translation
+│   └── wizard.rs               # Config wizard
 ├── Cargo.toml
 ├── config-template.yaml
 ├── README.md
 └── BUILD.md
 ```
 
-## 开发
+## Development
 
-### 运行开发服务器
+### Run development server
 
 ```bash
 cargo run -- start
 ```
 
-### 代码检查
+### Code linting
 
 ```bash
 cargo clippy
 ```
 
-### 代码格式化
+### Code formatting
 
 ```bash
 cargo fmt
 ```
 
-## 发布流程
+## Release Process
 
-1. 更新版本号在 `Cargo.toml`
-2. 创建 Git tag
-3. 构建各平台二进制文件
-4. 上传到 GitHub Releases
+1. Update version number in `Cargo.toml`
+2. Create Git tag
+3. Build binaries for all platforms
+4. Upload to GitHub Releases
 
-## 许可证
+## License
 
 MIT License
