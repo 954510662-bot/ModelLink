@@ -1,11 +1,10 @@
 <div align="center">
 
+![ModelLink Logo](assets/modelink-logo-full.png)
+
 # ModelLink
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 16px; margin: 20px 0;">
-  <h1 style="color: white; font-size: 48px; margin: 0;">🔗 ModelLink</h1>
-  <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-top: 10px;">A local proxy that allows AI coding tools to transparently use any third-party model</p>
-</div>
+A local proxy that allows AI coding tools to transparently use any third-party model
 
 </div>
 
