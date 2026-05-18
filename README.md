@@ -1,6 +1,6 @@
 <div align="center">
 
-![ModelLink Logo](assets/modelink-logo-full.png)
+<img src="assets/modelink-logo-full.svg" alt="ModelLink Logo" width="400" height="128">
 
 # ModelLink
 
