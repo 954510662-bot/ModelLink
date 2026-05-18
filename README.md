@@ -1,12 +1,10 @@
 <div align="center">
-
-<div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); padding: 40px; border-radius: 16px; margin: 20px 0; display: inline-block;">
-  <img src="assets/modelink-logo-full.svg" alt="ModelLink Logo" width="400" height="128">
-  <p style="color: #1f2937; font-size: 18px; margin-top: 20px;">
-    A local proxy that allows AI coding tools to transparently use any third-party model
-  </p>
-</div>
-
+  <div style="background-color: #fbbf24; padding: 40px; border-radius: 16px; display: inline-block;">
+    <img src="assets/modelink-logo-full.svg" alt="ModelLink Logo" width="400" height="128">
+    <p style="color: #1f2937; font-size: 18px; margin-top: 20px;">
+      A local proxy that allows AI coding tools to transparently use any third-party model
+    </p>
+  </div>
 </div>
 
 ## Features
