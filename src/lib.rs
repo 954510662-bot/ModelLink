@@ -1,0 +1,40 @@
+mod audit;
+mod backup;
+mod cli;
+mod config;
+mod config_watcher;
+mod errors;
+mod failover;
+mod health;
+mod metrics;
+mod migration;
+mod mock;
+mod models;
+mod proxy;
+mod server;
+mod stream;
+mod translator;
+mod wizard;
+
+pub use audit::{AuditEntry, AuditLogger, MetricsCollector, MetricsSnapshot};
+pub use backup::{BackupInfo, ConfigBackup};
+pub use cli::{Cli, handle_cli};
+pub use config::{Config, ConfigManager, ModelCapabilities, ModelCapabilityDB, ProviderConfig, ServerConfig};
+pub use config_watcher::{ConfigHotReload, ConfigWatcher};
+pub use errors::{ModelLinkError, Result};
+pub use failover::{FailoverConfig, FailoverManager, FailoverState, HealthCheckResult};
+pub use health::{HealthStatus, health_handler, ready_handler, init_start_time};
+pub use migration::{ConfigMigrator, ConfigVersion, MigratorState};
+pub use metrics::{MetricsRecorder, MetricsState, RecorderState, create_metrics_router};
+pub use mock::{MockMode, MockResponse, MockServer};
+pub use models::*;
+pub use proxy::create_router;
+pub use server::start_server;
+pub use stream::*;
+pub use translator::{ParameterTranslator, TranslateResult, translate_request_for_model};
+pub use wizard::{ConfigWizard, WizardAnswers, ProviderType, QuickSetup};
+
+#[cfg(test)]
+mod tests {
+    pub use super::*;
+}

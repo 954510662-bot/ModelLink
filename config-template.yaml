@@ -1,0 +1,55 @@
+# ModelLink 配置文件
+# 版本: 1.0
+
+# 服务器配置
+server:
+  host: 127.0.0.1
+  port: 9191
+
+# 模型提供商配置
+providers:
+  deepseek:
+    base_url: https://api.deepseek.com/v1
+    api_key_env: DEEPSEEK_API_KEY
+    capabilities:
+      streaming: true
+      supports_function_calling: true
+      supports_temperature: true
+      supports_top_p: true
+      supports_top_k: false
+      max_temperature: 1.0
+      parameter_aliases: {}
+      unsupported_params: []
+
+  qwen:
+    base_url: https://dashscope.aliyuncs.com/api/v1
+    api_key_env: QWEN_API_KEY
+    capabilities:
+      streaming: true
+      supports_function_calling: false
+      supports_temperature: true
+      supports_top_p: true
+      supports_top_k: false
+      max_temperature: 1.0
+      parameter_aliases:
+        max_tokens: maxTokens
+      unsupported_params: []
+
+# 模型映射
+# 将编程工具中的模型名称映射到实际模型
+mappings:
+  claude-3-opus: deepseek-chat
+  claude-3-sonnet: deepseek-chat
+  gpt-4: qwen-coder
+  gpt-3.5-turbo: qwen-coder
+
+# 日志配置
+logging:
+  level: info
+  file: ~/.model-link/logs/model-link.log
+  retention_days: 30
+
+# 安全配置
+security:
+  audit_enabled: true
+  masking_enabled: true

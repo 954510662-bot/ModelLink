@@ -1,0 +1,54 @@
+[package]
+name = "model-link"
+version = "0.1.0"
+edition = "2021"
+description = "A local proxy that allows AI coding tools to transparently use any third-party model"
+authors = ["ModelLink Team <dev@model-link.io>"]
+license = "MIT"
+readme = "README.md"
+keywords = ["ai", "proxy", "llm", "claude", "codex"]
+categories = ["web-programming", "network-programming"]
+
+[lib]
+name = "model_link"
+path = "src/lib.rs"
+
+[[bin]]
+name = "model-link"
+path = "src/bin/model_link.rs"
+
+[dependencies]
+anyhow = "1"
+axum = "0.7"
+hyper = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json", "stream"] }
+tokio = { version = "1", features = ["full"] }
+futures-util = "0.3"
+tokio-stream = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+config = "0.13"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+notify = "6"
+crossbeam-channel = "0.5"
+clap = { version = "4.5", features = ["derive"] }
+clap_complete = "4.5"
+color-eyre = "0.6"
+url = "2"
+chrono = { version = "0.4", features = ["serde"] }
+dirs = "5"
+uuid = { version = "1", features = ["v4"] }
+rustc_version = "0.4"
+self_update = { version = "0.40", optional = true }
+
+[features]
+default = []
+update = ["self_update"]
+
+[dev-dependencies]
+reqwest = { version = "0.12", features = ["json", "stream"] }
+mockito = "1"
+tokio-test = "0.4"
+tempfile = "3"
