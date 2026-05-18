@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModelLink Visual Identity Generator</title>
+    <style>
+        :root {
+            --primary-start: #667eea;
+            --primary-end: #764ba2;
+            --dark-bg: #0f0f23;
+            --card-bg: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a3e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .preview-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .preview-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .preview-box {
+            background: var(--dark-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .preview-box.dark {
+            background: #000;
+        }
+
+        .preview-box.gradient {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .logo-text-gradient {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-horizontal {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo-horizontal .logo-icon {
+            width: 56px;
+            height: 56px;
+        }
+
+        .logo-horizontal .logo-text {
+            font-size: 1.8rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .size-variants {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .size-variant {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .size-variant span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .color-swatch::after {
+            content: attr(data-hex);
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ModelLink 视觉识别系统</h1>
+        <p class="subtitle">Visual Identity System Generator</p>
+
+        <div class="preview-grid">
+            <!-- Logo Variants -->
+            <div class="preview-card">
+                <h3>Logo 图标</h3>
+                <div class="preview-box dark">
+                    <svg class="logo-icon" viewBox="0 0 64 64" id="logo-icon-preview">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea"/>
+                                <stop offset="100%" style="stop-color:#764ba2"/>
+                            </linearGradient>
+                            <linearGradient id="logoGradientLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea"/>
+                                <stop offset="100%" style="stop-color:#764ba2"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Central node -->
+                        <circle cx="32" cy="32" r="8" fill="url(#logoGradient)"/>
+                        <!-- Connection lines -->
+                        <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Satellite nodes -->
+                        <circle cx="32" cy="8" r="4" fill="url(#logoGradient)"/>
+                        <circle cx="32" cy="56" r="4" fill="url(#logoGradient)"/>
+                        <circle cx="8" cy="32" r="4" fill="url(#logoGradient)"/>
+                        <circle cx="56" cy="32" r="4" fill="url(#logoGradient)"/>
+                        <!-- Diagonal connections -->
+                        <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                        <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                        <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                        <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                        <!-- Corner nodes -->
+                        <circle cx="15" cy="15" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+                        <circle cx="49" cy="15" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+                        <circle cx="15" cy="49" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+                        <circle cx="49" cy="49" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+                    </svg>
+                </div>
+                <p style="text-align: center; color: var(--text-secondary); font-size: 0.85rem;">
+                    象征AI模型间的透明链接与协作
+                </p>
+            </div>
+
+            <!-- Logo with Text -->
+            <div class="preview-card">
+                <h3>Logo + 文字组合</h3>
+                <div class="preview-box dark">
+                    <div class="logo-horizontal">
+                        <svg class="logo-icon" viewBox="0 0 64 64">
+                            <defs>
+                                <linearGradient id="logoGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea"/>
+                                    <stop offset="100%" style="stop-color:#764ba2"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="32" cy="32" r="8" fill="url(#logoGradient2)"/>
+                            <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient2)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient2)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient2)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient2)" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="32" cy="8" r="4" fill="url(#logoGradient2)"/>
+                            <circle cx="32" cy="56" r="4" fill="url(#logoGradient2)"/>
+                            <circle cx="8" cy="32" r="4" fill="url(#logoGradient2)"/>
+                            <circle cx="56" cy="32" r="4" fill="url(#logoGradient2)"/>
+                            <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <circle cx="15" cy="15" r="3" fill="url(#logoGradient2)" opacity="0.7"/>
+                            <circle cx="49" cy="15" r="3" fill="url(#logoGradient2)" opacity="0.7"/>
+                            <circle cx="15" cy="49" r="3" fill="url(#logoGradient2)" opacity="0.7"/>
+                            <circle cx="49" cy="49" r="3" fill="url(#logoGradient2)" opacity="0.7"/>
+                        </svg>
+                        <span class="logo-text logo-text-gradient">ModelLink</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- White Background Version -->
+            <div class="preview-card">
+                <h3>浅色背景版本</h3>
+                <div class="preview-box">
+                    <div class="logo-horizontal">
+                        <svg class="logo-icon" viewBox="0 0 64 64">
+                            <defs>
+                                <linearGradient id="logoGradientLight2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea"/>
+                                    <stop offset="100%" style="stop-color:#764ba2"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="32" cy="32" r="8" fill="url(#logoGradientLight2)"/>
+                            <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradientLight2)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradientLight2)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradientLight2)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradientLight2)" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="32" cy="8" r="4" fill="url(#logoGradientLight2)"/>
+                            <circle cx="32" cy="56" r="4" fill="url(#logoGradientLight2)"/>
+                            <circle cx="8" cy="32" r="4" fill="url(#logoGradientLight2)"/>
+                            <circle cx="56" cy="32" r="4" fill="url(#logoGradientLight2)"/>
+                            <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradientLight2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradientLight2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradientLight2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradientLight2)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                            <circle cx="15" cy="15" r="3" fill="url(#logoGradientLight2)" opacity="0.7"/>
+                            <circle cx="49" cy="15" r="3" fill="url(#logoGradientLight2)" opacity="0.7"/>
+                            <circle cx="15" cy="49" r="3" fill="url(#logoGradientLight2)" opacity="0.7"/>
+                            <circle cx="49" cy="49" r="3" fill="url(#logoGradientLight2)" opacity="0.7"/>
+                        </svg>
+                        <span class="logo-text" style="color: #1a1a2e;">ModelLink</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Size Variants -->
+            <div class="preview-card">
+                <h3>尺寸变体</h3>
+                <div class="preview-box dark">
+                    <div class="size-variants">
+                        <div class="size-variant">
+                            <svg width="128" height="128" viewBox="0 0 64 64">
+                                <defs>
+                                    <linearGradient id="logoGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea"/>
+                                        <stop offset="100%" style="stop-color:#764ba2"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="8" fill="url(#logoGradient3)"/>
+                                <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient3)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient3)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient3)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient3)" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="32" cy="8" r="4" fill="url(#logoGradient3)"/>
+                                <circle cx="32" cy="56" r="4" fill="url(#logoGradient3)"/>
+                                <circle cx="8" cy="32" r="4" fill="url(#logoGradient3)"/>
+                                <circle cx="56" cy="32" r="4" fill="url(#logoGradient3)"/>
+                                <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient3)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient3)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient3)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient3)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <circle cx="15" cy="15" r="3" fill="url(#logoGradient3)" opacity="0.7"/>
+                                <circle cx="49" cy="15" r="3" fill="url(#logoGradient3)" opacity="0.7"/>
+                                <circle cx="15" cy="49" r="3" fill="url(#logoGradient3)" opacity="0.7"/>
+                                <circle cx="49" cy="49" r="3" fill="url(#logoGradient3)" opacity="0.7"/>
+                            </svg>
+                            <span>128x128</span>
+                        </div>
+                        <div class="size-variant">
+                            <svg width="64" height="64" viewBox="0 0 64 64">
+                                <defs>
+                                    <linearGradient id="logoGradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea"/>
+                                        <stop offset="100%" style="stop-color:#764ba2"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="8" fill="url(#logoGradient4)"/>
+                                <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient4)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient4)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient4)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient4)" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="32" cy="8" r="4" fill="url(#logoGradient4)"/>
+                                <circle cx="32" cy="56" r="4" fill="url(#logoGradient4)"/>
+                                <circle cx="8" cy="32" r="4" fill="url(#logoGradient4)"/>
+                                <circle cx="56" cy="32" r="4" fill="url(#logoGradient4)"/>
+                                <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient4)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient4)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient4)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient4)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <circle cx="15" cy="15" r="3" fill="url(#logoGradient4)" opacity="0.7"/>
+                                <circle cx="49" cy="15" r="3" fill="url(#logoGradient4)" opacity="0.7"/>
+                                <circle cx="15" cy="49" r="3" fill="url(#logoGradient4)" opacity="0.7"/>
+                                <circle cx="49" cy="49" r="3" fill="url(#logoGradient4)" opacity="0.7"/>
+                            </svg>
+                            <span>64x64</span>
+                        </div>
+                        <div class="size-variant">
+                            <svg width="32" height="32" viewBox="0 0 64 64">
+                                <defs>
+                                    <linearGradient id="logoGradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea"/>
+                                        <stop offset="100%" style="stop-color:#764ba2"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="8" fill="url(#logoGradient5)"/>
+                                <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient5)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient5)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient5)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient5)" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="32" cy="8" r="4" fill="url(#logoGradient5)"/>
+                                <circle cx="32" cy="56" r="4" fill="url(#logoGradient5)"/>
+                                <circle cx="8" cy="32" r="4" fill="url(#logoGradient5)"/>
+                                <circle cx="56" cy="32" r="4" fill="url(#logoGradient5)"/>
+                                <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient5)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient5)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient5)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient5)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <circle cx="15" cy="15" r="3" fill="url(#logoGradient5)" opacity="0.7"/>
+                                <circle cx="49" cy="15" r="3" fill="url(#logoGradient5)" opacity="0.7"/>
+                                <circle cx="15" cy="49" r="3" fill="url(#logoGradient5)" opacity="0.7"/>
+                                <circle cx="49" cy="49" r="3" fill="url(#logoGradient5)" opacity="0.7"/>
+                            </svg>
+                            <span>32x32</span>
+                        </div>
+                        <div class="size-variant">
+                            <svg width="16" height="16" viewBox="0 0 64 64">
+                                <defs>
+                                    <linearGradient id="logoGradient6" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea"/>
+                                        <stop offset="100%" style="stop-color:#764ba2"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="8" fill="url(#logoGradient6)"/>
+                                <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient6)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient6)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient6)" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient6)" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="32" cy="8" r="4" fill="url(#logoGradient6)"/>
+                                <circle cx="32" cy="56" r="4" fill="url(#logoGradient6)"/>
+                                <circle cx="8" cy="32" r="4" fill="url(#logoGradient6)"/>
+                                <circle cx="56" cy="32" r="4" fill="url(#logoGradient6)"/>
+                                <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient6)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient6)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient6)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient6)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                                <circle cx="15" cy="15" r="3" fill="url(#logoGradient6)" opacity="0.7"/>
+                                <circle cx="49" cy="15" r="3" fill="url(#logoGradient6)" opacity="0.7"/>
+                                <circle cx="15" cy="49" r="3" fill="url(#logoGradient6)" opacity="0.7"/>
+                                <circle cx="49" cy="49" r="3" fill="url(#logoGradient6)" opacity="0.7"/>
+                            </svg>
+                            <span>16x16</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="preview-card" style="max-width: 600px; margin: 0 auto 2rem;">
+            <h3>品牌色彩系统</h3>
+            <div class="color-palette">
+                <div class="color-swatch" style="background: #667eea;" data-hex="#667eea"></div>
+                <div class="color-swatch" style="background: #764ba2;" data-hex="#764ba2"></div>
+                <div class="color-swatch" style="background: linear-gradient(135deg, #667eea, #764ba2);" data-hex="Gradient"></div>
+                <div class="color-swatch" style="background: #0f0f23;" data-hex="#0f0f23"></div>
+                <div class="color-swatch" style="background: #1a1a2e;" data-hex="#1a1a2e"></div>
+                <div class="color-swatch" style="background: #ffffff;" data-hex="#ffffff"></div>
+            </div>
+        </div>
+
+        <!-- Export Actions -->
+        <div class="preview-card" style="max-width: 800px; margin: 0 auto 2rem;">
+            <h3>导出资源</h3>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                点击下方按钮导出所有视觉资源到 assets 目录
+            </p>
+            <div class="actions">
+                <button class="btn btn-primary" onclick="exportAll()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    导出所有资源
+                </button>
+                <button class="btn btn-secondary" onclick="exportLogoIcon()">
+                    导出 Logo 图标
+                </button>
+                <button class="btn btn-secondary" onclick="exportLogoWithText()">
+                    导出 Logo + 文字
+                </button>
+                <button class="btn btn-secondary" onclick="exportBackground()">
+                    导出背景图像
+                </button>
+            </div>
+        </div>
+
+        <canvas id="exportCanvas"></canvas>
+    </div>
+
+    <script>
+        // Logo SVG Data
+        const logoIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#667eea"/>
+                    <stop offset="100%" style="stop-color:#764ba2"/>
+                </linearGradient>
+            </defs>
+            <circle cx="32" cy="32" r="8" fill="url(#logoGradient)"/>
+            <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="32" cy="8" r="4" fill="url(#logoGradient)"/>
+            <circle cx="32" cy="56" r="4" fill="url(#logoGradient)"/>
+            <circle cx="8" cy="32" r="4" fill="url(#logoGradient)"/>
+            <circle cx="56" cy="32" r="4" fill="url(#logoGradient)"/>
+            <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+            <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+            <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+            <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+            <circle cx="15" cy="15" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+            <circle cx="49" cy="15" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+            <circle cx="15" cy="49" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+            <circle cx="49" cy="49" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+        </svg>`;
+
+        const logoWithTextSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 64" width="200" height="64">
+            <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#667eea"/>
+                    <stop offset="100%" style="stop-color:#764ba2"/>
+                </linearGradient>
+            </defs>
+            <g transform="translate(0, 0)">
+                <circle cx="32" cy="32" r="8" fill="url(#logoGradient)"/>
+                <line x1="32" y1="24" x2="32" y2="8" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                <line x1="32" y1="40" x2="32" y2="56" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                <line x1="24" y1="32" x2="8" y2="32" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                <line x1="40" y1="32" x2="56" y2="32" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="32" cy="8" r="4" fill="url(#logoGradient)"/>
+                <circle cx="32" cy="56" r="4" fill="url(#logoGradient)"/>
+                <circle cx="8" cy="32" r="4" fill="url(#logoGradient)"/>
+                <circle cx="56" cy="32" r="4" fill="url(#logoGradient)"/>
+                <line x1="25" y1="25" x2="15" y2="15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                <line x1="39" y1="25" x2="49" y2="15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                <line x1="25" y1="39" x2="15" y2="49" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                <line x1="39" y1="39" x2="49" y2="49" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                <circle cx="15" cy="15" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+                <circle cx="49" cy="15" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+                <circle cx="15" cy="49" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+                <circle cx="49" cy="49" r="3" fill="url(#logoGradient)" opacity="0.7"/>
+            </g>
+            <text x="72" y="42" font-family="'Segoe UI', Arial, sans-serif" font-size="28" font-weight="700" fill="#667eea">ModelLink</text>
+        </svg>`;
+
+        function svgToImage(svgString, width, height) {
+            return new Promise((resolve) => {
+                const canvas = document.getElementById('exportCanvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+
+                const img = new Image();
+                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, width, height);
+                    URL.revokeObjectURL(url);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.src = url;
+            });
+        }
+
+        function downloadImage(dataUrl, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+        }
+
+        function saveSvgFile(svgString, filename) {
+            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function exportLogoIcon() {
+            // Export SVG
+            saveSvgFile(logoIconSVG, 'modelink-logo-icon.svg');
+
+            // Export PNG at various sizes
+            const sizes = [512, 256, 128, 64, 32, 16];
+            for (const size of sizes) {
+                const dataUrl = await svgToImage(logoIconSVG, size, size);
+                downloadImage(dataUrl, `modelink-logo-icon-${size}.png`);
+                await new Promise(r => setTimeout(r, 200));
+            }
+        }
+
+        async function exportLogoWithText() {
+            // Export SVG
+            saveSvgFile(logoWithTextSVG, 'modelink-logo-full.svg');
+
+            // Export PNG
+            const dataUrl = await svgToImage(logoWithTextSVG, 400, 128);
+            downloadImage(dataUrl, 'modelink-logo-full.png');
+        }
+
+        async function exportBackground() {
+            const canvas = document.getElementById('exportCanvas');
+            canvas.width = 1920;
+            canvas.height = 1080;
+            const ctx = canvas.getContext('2d');
+
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 1920, 1080);
+            gradient.addColorStop(0, '#0f0f23');
+            gradient.addColorStop(0.5, '#1a1a3e');
+            gradient.addColorStop(1, '#0f0f23');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1920, 1080);
+
+            // Draw grid
+            ctx.strokeStyle = 'rgba(102, 126, 234, 0.1)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < 1920; x += 60) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, 1080);
+                ctx.stroke();
+            }
+            for (let y = 0; y < 1080; y += 60) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(1920, y);
+                ctx.stroke();
+            }
+
+            // Draw connection lines
+            const lineGradient = ctx.createLinearGradient(0, 0, 1920, 1080);
+            lineGradient.addColorStop(0, 'rgba(102, 126, 234, 0.4)');
+            lineGradient.addColorStop(1, 'rgba(118, 75, 162, 0.4)');
+
+            ctx.strokeStyle = lineGradient;
+            ctx.lineWidth = 2;
+
+            const connections = [
+                [[200, 300], [500, 400], [800, 350]],
+                [[300, 700], [600, 600], [900, 650]],
+                [[1200, 200], [1400, 350], [1600, 300]],
+                [[1100, 700], [1300, 550], [1700, 600]],
+                [[400, 500], [700, 450], [1000, 520]],
+                [[1000, 400], [1300, 450], [1600, 400]]
+            ];
+
+            connections.forEach(path => {
+                ctx.beginPath();
+                ctx.moveTo(path[0][0], path[0][1]);
+                for (let i = 1; i < path.length; i++) {
+                    ctx.lineTo(path[i][0], path[i][1]);
+                }
+                ctx.stroke();
+            });
+
+            // Draw nodes
+            const nodes = [
+                [200, 300], [500, 400], [800, 350],
+                [300, 700], [600, 600], [900, 650],
+                [1200, 200], [1400, 350], [1600, 300],
+                [1100, 700], [1300, 550], [1700, 600],
+                [400, 500], [700, 450], [1000, 520],
+                [1000, 400], [1300, 450], [1600, 400]
+            ];
+
+            nodes.forEach(([x, y]) => {
+                // Glow effect
+                const glow = ctx.createRadialGradient(x, y, 0, x, y, 30);
+                glow.addColorStop(0, 'rgba(102, 126, 234, 0.5)');
+                glow.addColorStop(1, 'rgba(102, 126, 234, 0)');
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(x, y, 30, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Node circle
+                const nodeGradient = ctx.createRadialGradient(x - 5, y - 5, 0, x, y, 15);
+                nodeGradient.addColorStop(0, '#667eea');
+                nodeGradient.addColorStop(1, '#764ba2');
+                ctx.fillStyle = nodeGradient;
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Add ModelLink logo in center
+            ctx.globalAlpha = 0.15;
+            const logoScale = 3;
+            const logoSize = 64 * logoScale;
+            const logoX = (1920 - logoSize) / 2;
+            const logoY = (1080 - logoSize) / 2;
+
+            const img = new Image();
+            const svgBlob = new Blob([logoIconSVG], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(svgBlob);
+
+            await new Promise((resolve) => {
+                img.onload = resolve;
+                img.src = url;
+            });
+
+            ctx.drawImage(img, logoX, logoY, logoSize, logoSize);
+            ctx.globalAlpha = 1;
+            URL.revokeObjectURL(url);
+
+            // Download
+            const dataUrl = canvas.toDataURL('image/png');
+            downloadImage(dataUrl, 'modelink-background-1920x1080.png');
+        }
+
+        async function exportAll() {
+            await exportLogoIcon();
+            await new Promise(r => setTimeout(r, 500));
+            await exportLogoWithText();
+            await new Promise(r => setTimeout(r, 500));
+            await exportBackground();
+        }
+    </script>
+</body>
+</html>
