@@ -1,64 +1,64 @@
-# ModelLink 视觉识别系统设计规范
+# ModelLink Visual Identity System Design Guide
 
-## 1. 设计理念与灵感来源
+## 1. Design Concept & Inspiration
 
-### 1.1 核心概念
-ModelLink 是一个本地代理工具，让 AI 编程工具能够透明地使用任意第三方模型。其核心价值主张是：
-- **链接 (Link)**：连接不同的 AI 模型和服务
-- **代理 (Proxy)**：作为中间层实现协议转换
-- **透明 (Transparent)**：对上层应用完全透明
-- **本地 (Local)**：强调数据隐私和本地部署
+### 1.1 Core Concept
+ModelLink is a local proxy tool that enables AI coding tools to transparently use any third-party model. Its core value propositions are:
+- **Link**: Connect different AI models and services
+- **Proxy**: Act as an intermediate layer for protocol conversion
+- **Transparent**: Completely transparent to upper-layer applications
+- **Local**: Emphasize data privacy and local deployment
 
-### 1.2 设计灵感
-Logo 设计灵感来源于**神经网络连接图**和**网络拓扑结构**：
+### 1.2 Design Inspiration
+Logo design is inspired by **neural network connection diagrams** and **network topologies**:
 
-- **中心节点**：代表 ModelLink 作为核心代理/枢纽的角色
-- **连接线**：象征模型间的通信链路和协议转换
-- **卫星节点**：代表不同的 AI 模型或服务
-- **对角线连接**：暗示复杂的多对多连接关系
+- **Center Node**: Represents ModelLink as the core proxy/hub
+- **Connection Lines**: Symbolize communication links and protocol conversion between models
+- **Satellite Nodes**: Represent different AI models or services
+- **Diagonal Connections**: Suggest complex many-to-many connection relationships
 
-这种设计既体现了技术属性（网络、链接），又具有足够的抽象性和艺术性。
+This design embodies technical attributes (network, links) while maintaining sufficient abstraction and artistry.
 
-### 1.3 设计目标
-- 简洁专业：易于识别和记忆
-- 技术感强：体现 AI/技术属性
-- 高度辨识：独特且不易与其他品牌混淆
-- 灵活适应：支持多种尺寸和背景
+### 1.3 Design Goals
+- **Simple & Professional**: Easy to recognize and remember
+- **Technically Strong**: Reflect AI/technology attributes
+- **Highly Distinctive**: Unique and not easily confused with other brands
+- **Flexibly Adaptable**: Support multiple sizes and backgrounds
 
 ---
 
-## 2. 色彩规范
+## 2. Color Specifications
 
-### 2.1 主色系
+### 2.1 Primary Color Palette
 
-| 颜色名称 | 色值 | 用途 |
-|---------|------|------|
-| 渐变起点 | `#667eea` | 主色调，代表创新、科技 |
-| 渐变终点 | `#764ba2` | 辅助色调，代表连接、协作 |
-| 渐变效果 | `linear-gradient(135deg, #667eea, #764ba2)` | 主要品牌色 |
+| Color Name | Value | Usage |
+|-----------|-------|-------|
+| Gradient Start | `#667eea` | Primary color, representing innovation and technology |
+| Gradient End | `#764ba2` | Secondary color, representing connection and collaboration |
+| Gradient Effect | `linear-gradient(135deg, #667eea, #764ba2)` | Main brand color |
 
-### 2.2 背景色系
+### 2.2 Background Color Palette
 
-| 颜色名称 | 色值 | 用途 |
-|---------|------|------|
-| 深色背景 | `#0f0f23` | GitHub 深色模式、正式场景 |
-| 次深色 | `#1a1a2e` | 卡片背景、次级容器 |
-| 浅色背景 | `#ffffff` | 浅色模式、文档 |
+| Color Name | Value | Usage |
+|-----------|-------|-------|
+| Dark Background | `#0f0f23` | GitHub dark mode, formal scenarios |
+| Secondary Dark | `#1a1a2e` | Card backgrounds, secondary containers |
+| Light Background | `#ffffff` | Light mode, documentation |
 
-### 2.3 文字色系
+### 2.3 Text Color Palette
 
-| 用途 | 浅色背景 | 深色背景 |
-|------|---------|---------|
-| 主文字 | `#1a1a2e` | `#ffffff` |
-| 次文字 | `#6b7280` | `#a0a0b0` |
-| Logo 文字 | 渐变色 | 渐变色 |
+| Usage | Light Background | Dark Background |
+|------|-----------------|-----------------|
+| Main Text | `#1a1a2e` | `#ffffff` |
+| Secondary Text | `#6b7280` | `#a0a0b0` |
+| Logo Text | Gradient | Gradient |
 
-### 2.4 渐变应用指南
+### 2.4 Gradient Application Guide
 ```css
-/* 主品牌渐变 */
+/* Main brand gradient */
 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
-/* Logo 文字 */
+/* Logo text */
 background: linear-gradient(135deg, #667eea, #764ba2);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
@@ -66,166 +66,166 @@ background: linear-gradient(135deg, #667eea, #764ba2);
 
 ---
 
-## 3. 字体规范
+## 3. Typography Specifications
 
-### 3.1 推荐字体栈
+### 3.1 Recommended Font Stack
 ```css
 font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont,
              'Helvetica Neue', Arial, sans-serif;
 ```
 
-### 3.2 字号层级
+### 3.2 Font Size Hierarchy
 
-| 用途 | 字号 | 字重 | 说明 |
-|------|------|------|------|
-| Logo 文字 | 28-32px | 700 (Bold) | 主要展示 |
-| 标题 H1 | 24px | 600 | 页面标题 |
-| 标题 H2 | 20px | 600 | 章节标题 |
-| 正文 | 16px | 400 | 主要内容 |
-| 辅助文字 | 14px | 400 | 说明文字 |
-| 小字 | 12px | 400 | 标签、注释 |
+| Usage | Size | Weight | Notes |
+|------|------|--------|-------|
+| Logo Text | 28-32px | 700 (Bold) | Main display |
+| Heading H1 | 24px | 600 | Page title |
+| Heading H2 | 20px | 600 | Section title |
+| Body Text | 16px | 400 | Main content |
+| Helper Text | 14px | 400 | Explanatory text |
+| Small Text | 12px | 400 | Labels, comments |
 
-### 3.3 使用注意事项
-- Logo 文字必须使用粗体 (700)
-- 避免使用过于花哨的字体
-- 确保在各种操作系统上的一致性展示
+### 3.3 Usage Notes
+- Logo text must use bold (700)
+- Avoid overly decorative fonts
+- Ensure consistent display across various operating systems
 
 ---
 
-## 4. Logo 设计规范
+## 4. Logo Design Specifications
 
-### 4.1 图标设计
+### 4.1 Icon Design
 
-#### 结构组成
-- **中心节点**：半径为图标尺寸的 1/4
-- **主连接线**：4 条，连接中心与四个方向
-- **辅连接线**：4 条，连接角落节点
-- **节点**：8 个（4 大 + 4 小）
+#### Structural Composition
+- **Center Node**: Radius 1/4 of icon size
+- **Main Connection Lines**: 4 lines connecting center to four directions
+- **Secondary Connection Lines**: 4 lines connecting corner nodes
+- **Nodes**: 8 total (4 large + 4 small)
 
-#### 视觉比例
+#### Visual Proportions
 ```
-图标尺寸: 64x64 (基准)
-- 中心节点: r=8
-- 方向节点: r=4
-- 对角节点: r=3
-- 连接线宽: 2px (主线), 1.5px (辅线)
+Icon size: 64x64 (base)
+- Center node: r=8
+- Direction nodes: r=4
+- Diagonal nodes: r=3
+- Line width: 2px (main), 1.5px (secondary)
 ```
 
-### 4.2 安全区域
-Logo 周围应保留足够的空白区域，建议：
-- 最小安全边距：图标宽度的 1/4
-- 推荐边距：图标宽度的 1/2
+### 4.2 Safe Area
+Sufficient whitespace should be preserved around the logo. Recommendations:
+- Minimum safe margin: 1/4 of icon width
+- Recommended margin: 1/2 of icon width
 
-### 4.3 最小使用尺寸
-| 场景 | 最小尺寸 |
-|------|---------|
+### 4.3 Minimum Usage Size
+| Scenario | Minimum Size |
+|---------|-------------|
 | Favicon | 16x16 |
-| 移动端列表 | 24x24 |
-| 文档图标 | 32x32 |
-| 网站图标 | 64x64 |
-| 营销材料 | 128x128+ |
+| Mobile Lists | 24x24 |
+| Document Icons | 32x32 |
+| Website Icons | 64x64 |
+| Marketing Materials | 128x128+ |
 
 ---
 
-## 5. 文件清单
+## 5. File Inventory
 
-### 5.1 SVG 文件 (矢量，可无损缩放)
+### 5.1 SVG Files (Vector, Lossless Scaling)
 
-| 文件名 | 尺寸 | 说明 |
-|--------|------|------|
-| `modelink-logo-icon.svg` | 64x64 | Logo 图标 |
-| `modelink-logo-full.svg` | 240x64 | Logo + 文字组合 |
+| Filename | Size | Description |
+|---------|------|-------------|
+| `modelink-logo-icon.svg` | 64x64 | Logo icon |
+| `modelink-logo-full.svg` | 240x64 | Logo + text combination |
 
-### 5.2 PNG 文件 (位图，适用于各种场景)
+### 5.2 PNG Files (Bitmap, Suitable for Various Scenarios)
 
-| 文件名 | 尺寸 | 用途 |
-|--------|------|------|
-| `modelink-logo-icon-512.png` | 512x512 | 大尺寸展示 |
-| `modelink-logo-icon-256.png` | 256x256 | 中等尺寸 |
-| `modelink-logo-icon-128.png` | 128x128 | 图标用途 |
-| `modelink-logo-icon-64.png` | 64x64 | 小图标 |
-| `modelink-logo-icon-32.png` | 32x32 | 紧凑展示 |
+| Filename | Size | Usage |
+|---------|------|-------|
+| `modelink-logo-icon-512.png` | 512x512 | Large display |
+| `modelink-logo-icon-256.png` | 256x256 | Medium size |
+| `modelink-logo-icon-128.png` | 128x128 | Icon usage |
+| `modelink-logo-icon-64.png` | 64x64 | Small icon |
+| `modelink-logo-icon-32.png` | 32x32 | Compact display |
 | `modelink-logo-icon-16.png` | 16x16 | Favicon |
 
-### 5.3 背景图像
+### 5.3 Background Images
 
-| 文件名 | 尺寸 | 说明 |
-|--------|------|------|
-| `modelink-background-1920x1080.png` | 1920x1080 | GitHub 仓库封面 |
+| Filename | Size | Description |
+|---------|------|-------------|
+| `modelink-background-1920x1080.png` | 1920x1080 | GitHub repository cover |
 
-### 5.4 工具文件
+### 5.4 Tool Files
 
-| 文件名 | 说明 |
-|--------|------|
-| `visual-identity-generator.html` | 交互式预览生成器 |
-| `generate-assets.ps1` | PowerShell 批量生成脚本 |
-| `DESIGN_GUIDE.md` | 设计规范文档 |
-
----
-
-## 6. 使用场景指南
-
-### 6.1 GitHub 仓库
-- **仓库封面**：使用 `modelink-background-1920x1080.png`
-- **仓库图标**：使用 `modelink-logo-icon-64.png`
-- **README 头部**：使用 `modelink-logo-full.svg` 或 PNG 版本
-
-### 6.2 网站应用
-- **导航栏 Logo**：使用 SVG 或 128x128 PNG
-- **Favicon**：使用 16x16 或 32x32 PNG
-- **加载动画**：可使用 Logo 旋转或脉冲效果
-
-### 6.3 文档材料
-- **标题页**：使用完整 Logo（图标+文字）
-- **章节图标**：使用纯图标版本
-- **页脚**：使用小尺寸图标
-
-### 6.4 演示材料
-- **PPT/Keynote**：使用 SVG 或大尺寸 PNG (512x512+)
-- **名片**：使用 300dpi 的 PNG
-- **周边产品**：联系设计师获取特定尺寸
+| Filename | Description |
+|---------|-------------|
+| `visual-identity-generator.html` | Interactive preview generator |
+| `generate-assets.ps1` | PowerShell batch generation script |
+| `DESIGN_GUIDE.md` | Design specification document |
 
 ---
 
-## 7. 深色与浅色模式
+## 6. Usage Scenario Guide
 
-### 7.1 深色模式 (推荐)
-- 背景：`#0f0f23` 或 `#1a1a2e`
-- Logo：使用渐变色版本（保持一致）
-- 文字：白色 `#ffffff`
+### 6.1 GitHub Repository
+- **Repository Cover**: Use `modelink-background-1920x1080.png`
+- **Repository Icon**: Use `modelink-logo-icon-64.png`
+- **README Header**: Use `modelink-logo-full.svg` or PNG version
 
-### 7.2 浅色模式
-- 背景：`#ffffff` 或 `#f9fafb`
-- Logo 文字：使用 `#1a1a2e` 或渐变色
-- 图标：保持渐变色
+### 6.2 Web Applications
+- **Navigation Logo**: Use SVG or 128x128 PNG
+- **Favicon**: Use 16x16 or 32x32 PNG
+- **Loading Animation**: Can use logo rotation or pulse effects
 
----
+### 6.3 Documentation Materials
+- **Title Page**: Use complete logo (icon + text)
+- **Section Icons**: Use icon-only version
+- **Footer**: Use small size icon
 
-## 8. 注意事项
-
-### 8.1 禁止事项
-- 禁止拉伸或扭曲 Logo
-- 禁止更改渐变角度
-- 禁止更换品牌颜色
-- 禁止在 Logo 周围添加阴影（除设计规范外）
-- 禁止将 Logo 放在低对比度背景上
-
-### 8.2 正确做法
-- 始终保持宽高比
-- 使用提供的安全边距
-- 在不同背景下测试可见性
-- 在移动设备上预览效果
+### 6.4 Presentation Materials
+- **PPT/Keynote**: Use SVG or large PNG (512x512+)
+- **Business Cards**: Use 300dpi PNG
+- **Merchandise**: Contact designer for specific dimensions
 
 ---
 
-## 9. 更新历史
+## 7. Dark & Light Modes
 
-| 版本 | 日期 | 更新内容 |
-|------|------|---------|
-| 1.0 | 2026-05-19 | 初始版本，包含 Logo 和背景图 |
+### 7.1 Dark Mode (Recommended)
+- Background: `#0f0f23` or `#1a1a2e`
+- Logo: Use gradient version (maintain consistency)
+- Text: White `#ffffff`
+
+### 7.2 Light Mode
+- Background: `#ffffff` or `#f9fafb`
+- Logo Text: Use `#1a1a2e` or gradient
+- Icon: Maintain gradient colors
 
 ---
 
-## 10. 联系方式
+## 8. Important Notes
 
-如需进一步的定制设计或有问题，请联系项目维护者。
+### 8.1 Prohibited Actions
+- Do not stretch or distort the logo
+- Do not change the gradient angle
+- Do not replace brand colors
+- Do not add shadows around the logo (except in design specifications)
+- Do not place the logo on low contrast backgrounds
+
+### 8.2 Recommended Practices
+- Always maintain aspect ratio
+- Use the provided safe margins
+- Test visibility on different backgrounds
+- Preview on mobile devices
+
+---
+
+## 9. Update History
+
+| Version | Date | Updates |
+|---------|------|---------|
+| 1.0 | 2026-05-19 | Initial version with logo and background image |
+
+---
+
+## 10. Contact Information
+
+For further custom design or questions, please contact the project maintainers.
