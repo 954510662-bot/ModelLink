@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand, ValueEnum, CommandFactory};
 use std::path::PathBuf;
 use clap_complete::{Shell, generate, Generator};
 #[cfg(feature = "update")]
