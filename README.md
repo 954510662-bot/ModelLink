@@ -1,6 +1,13 @@
+<div align="center">
+
 # ModelLink
 
-A local proxy that allows AI coding tools to transparently use any third-party model.
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 16px; margin: 20px 0;">
+  <h1 style="color: white; font-size: 48px; margin: 0;">🔗 ModelLink</h1>
+  <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-top: 10px;">A local proxy that allows AI coding tools to transparently use any third-party model</p>
+</div>
+
+</div>
 
 ## Features
 
@@ -15,11 +22,32 @@ A local proxy that allows AI coding tools to transparently use any third-party m
 - 🎭 **Mock/Offline Mode** - Development and testing support
 - 🐚 **Shell Completion** - Built-in shell completion support
 
+## Downloads
+
+### Latest Release: v0.1.0
+
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/954510662-bot/ModelLink?style=flat-square)](https://github.com/954510662-bot/ModelLink/releases/latest)
+
+| Platform | Download |
+|----------|----------|
+| **Windows x64** | [model-link-windows.exe](https://github.com/954510662-bot/ModelLink/releases/download/v0.1.0/model-link-windows.exe) |
+| **Linux x64** | [model-link-linux](https://github.com/954510662-bot/ModelLink/releases/download/v0.1.0/model-link-linux) |
+| **macOS x64** | [model-link-macos](https://github.com/954510662-bot/ModelLink/releases/download/v0.1.0/model-link-macos) |
+
+### Or build from source
+
+```bash
+git clone https://github.com/954510662-bot/ModelLink.git
+cd ModelLink
+cargo install --path .
+```
+
 ## Quick Start
 
 ### Installation
 
-From source:
+Download the binary for your platform from the [Releases](https://github.com/954510662-bot/ModelLink/releases) page, or install from source:
+
 ```bash
 git clone https://github.com/954510662-bot/ModelLink.git
 cd ModelLink
@@ -29,6 +57,7 @@ cargo install --path .
 ### Configuration
 
 Initialize default configuration:
+
 ```bash
 model-link config init
 ```
@@ -38,11 +67,13 @@ This will create a configuration file at `~/.config/model-link/config.yaml`.
 ### Usage
 
 Start the proxy:
+
 ```bash
 model-link start
 ```
 
 With custom port:
+
 ```bash
 model-link start --port 8080
 ```
@@ -70,6 +101,7 @@ model-link completions --shell powershell
 ### Health Check
 
 Check service health:
+
 ```bash
 curl http://localhost:9191/health
 curl http://localhost:9191/ready
@@ -78,6 +110,7 @@ curl http://localhost:9191/ready
 ### Metrics
 
 Get Prometheus metrics:
+
 ```bash
 curl http://localhost:9191/metrics
 ```
@@ -117,11 +150,13 @@ failover:
 ## Development
 
 Run tests:
+
 ```bash
 cargo test
 ```
 
 Build release:
+
 ```bash
 cargo build --release
 ```
