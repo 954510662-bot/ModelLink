@@ -14,6 +14,9 @@ interface Metrics {
   tokens_total: number;
   active_streams: number;
   avg_latency: number;
+  error_rate: number;
+  cpu_usage: number;
+  memory_usage: number;
 }
 
 const Dashboard: React.FC = () => {
@@ -65,18 +68,29 @@ const Dashboard: React.FC = () => {
         result.active_streams = parseInt(line.split(' ')[1]) || 0;
       } else if (line.startsWith('model_link_request_duration_seconds_avg')) {
         result.avg_latency = parseFloat(line.split(' ')[1]) || 0;
+      } else if (line.startsWith('model_link_error_rate')) {
+        result.error_rate = parseFloat(line.split(' ')[1]) || 0;
+      } else if (line.startsWith('model_link_cpu_usage')) {
+        result.cpu_usage = parseFloat(line.split(' ')[1]) || 0;
+      } else if (line.startsWith('model_link_memory_usage')) {
+        result.memory_usage = parseFloat(line.split(' ')[1]) || 0;
       }
     });
 
-    return result;
+    return {
+      requests_total: result.requests_total || 0,
+      errors_total: result.errors_total || 0,
+      tokens_total: result.tokens_total || 0,
+      active_streams: result.active_streams || 0,
+      avg_latency: result.avg_latency || 0,
+      error_rate: result.error_rate || 0,
+      cpu_usage: result.cpu_usage || 0,
+      memory_usage: result.memory_usage || 0,
+    };
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (
@@ -118,6 +132,30 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <PerformanceCard
+          title="CPU Usage"
+          value={metrics?.cpu_usage || 0}
+          maxValue={100}
+          unit="%"
+          color="blue"
+        />
+        <PerformanceCard
+          title="Memory Usage"
+          value={metrics?.memory_usage || 0}
+          maxValue={100}
+          unit="%"
+          color="purple"
+        />
+        <PerformanceCard
+          title="Error Rate"
+          value={(metrics?.error_rate || 0) * 100}
+          maxValue={10}
+          unit="%"
+          color={(metrics?.error_rate || 0) > 0.05 ? "red" : "green"}
+        />
+      </div>
+
       <div className="bg-gray-800 rounded-xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Request Volume</h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -146,7 +184,14 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-gray-800 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">System Health</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white">System Health</h3>
+            {metrics?.errors_total && metrics.errors_total > 0 && (
+              <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">
+                ⚠️ Issues Detected
+              </span>
+            )}
+          </div>
           <div className="flex items-center space-x-4">
             <div className={`w-4 h-4 rounded-full ${health?.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'}`}></div>
             <span className="text-white font-medium">
@@ -207,6 +252,107 @@ const StatCard: React.FC<{ title: string; value: string | number; icon: string; 
       </div>
       <div className="text-3xl font-bold text-white mb-1">{value}</div>
       <div className="text-gray-400 text-sm">{title}</div>
+    </div>
+  );
+};
+
+const PerformanceCard: React.FC<{ title: string; value: number; maxValue: number; unit: string; color: string }> = ({
+  title,
+  value,
+  maxValue,
+  unit,
+  color,
+}) => {
+  const percentage = Math.min((value / maxValue) * 100, 100);
+  
+  const colorClasses: Record<string, string> = {
+    blue: 'bg-blue-500',
+    purple: 'bg-purple-500',
+    green: 'bg-green-500',
+    red: 'bg-red-500',
+    yellow: 'bg-yellow-500',
+  };
+
+  return (
+    <div className="bg-gray-800 rounded-xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h4 className="text-white font-semibold">{title}</h4>
+        <span className={`text-2xl font-bold ${color === 'red' ? 'text-red-500' : color === 'green' ? 'text-green-500' : 'text-white'}`}>
+          {value.toFixed(1)}{unit}
+        </span>
+      </div>
+      <div className="w-full bg-gray-700 rounded-full h-2.5">
+        <div
+          className={`${colorClasses[color]} h-2.5 rounded-full transition-all duration-500`}
+          style={{ width: `${percentage}%` }}
+        ></div>
+      </div>
+      <div className="mt-2 flex justify-between text-xs text-gray-400">
+        <span>0</span>
+        <span>{maxValue}{unit}</span>
+      </div>
+    </div>
+  );
+};
+
+const DashboardSkeleton: React.FC = () => {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-32 bg-gray-700 rounded"></div>
+        <div className="h-10 w-24 bg-gray-700 rounded"></div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="bg-gray-800 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="h-8 w-8 bg-gray-700 rounded-full"></div>
+              <div className="h-6 w-16 bg-gray-700 rounded"></div>
+            </div>
+            <div className="h-10 w-20 bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 w-32 bg-gray-700 rounded"></div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-gray-800 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="h-6 w-32 bg-gray-700 rounded"></div>
+              <div className="h-8 w-20 bg-gray-700 rounded"></div>
+            </div>
+            <div className="w-full bg-gray-700 rounded-full h-2.5">
+              <div className="h-2.5 bg-blue-500 rounded-full w-3/4"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-gray-800 rounded-xl p-6">
+        <div className="h-6 w-40 bg-gray-700 rounded mb-4"></div>
+        <div className="h-64 bg-gray-700 rounded"></div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-gray-800 rounded-xl p-6">
+          <div className="h-6 w-32 bg-gray-700 rounded mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-12 bg-gray-700 rounded"></div>
+            ))}
+          </div>
+        </div>
+        <div className="bg-gray-800 rounded-xl p-6">
+          <div className="h-6 w-32 bg-gray-700 rounded mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-12 bg-gray-700 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
