@@ -10,6 +10,7 @@ use crate::{
     config::Config,
     errors::{ModelLinkError, Result},
     models::{AnthropicStreamEvent, OpenAIChoice, OpenAIDelta, OpenAIChatResponse},
+    utils::convert_headers,
 };
 
 pub async fn forward_streaming_request(
@@ -39,20 +40,6 @@ pub async fn forward_streaming_request(
     
     let body = response.bytes().await.map_err(|e| ModelLinkError::NetworkError(e.to_string()))?;
     Ok(Response::new(Body::from(body)))
-}
-
-fn convert_headers(headers: &HeaderMap) -> reqwest::header::HeaderMap {
-    let mut result = reqwest::header::HeaderMap::new();
-    for (key, value) in headers.iter() {
-        if let Ok(name) = reqwest::header::HeaderName::try_from(key.as_str()) {
-            if let Ok(val) = value.to_str() {
-                if let Ok(parsed) = val.parse() {
-                    result.insert(name, parsed);
-                }
-            }
-        }
-    }
-    result
 }
 
 pub fn transform_anthropic_to_openai_stream(event: &str) -> Result<String> {

@@ -57,7 +57,7 @@ impl FailoverManager {
 
     pub async fn start_health_checks(&self) {
         if !self.config.enabled {
-            tracing::info!("故障转移已禁用");
+            tracing::info!("Failover is disabled");
             return;
         }
 
@@ -103,14 +103,14 @@ impl FailoverManager {
                 }
 
                 if all_unhealthy {
-                    tracing::warn!("所有提供商都不健康!");
+                    tracing::warn!("All providers are unhealthy!");
                     let mut active = active_arc.write().await;
                     *active = None;
                 } else {
                     if let Some(first_healthy) = health_checks.iter().find(|r| r.is_healthy) {
                         let mut active = active_arc.write().await;
                         if *active != Some(first_healthy.provider_name.clone()) {
-                            tracing::info!("切换到备用提供商: {}", first_healthy.provider_name);
+                            tracing::info!("Switching to backup provider: {}", first_healthy.provider_name);
                             *active = Some(first_healthy.provider_name.clone());
                         }
                     }
@@ -118,7 +118,7 @@ impl FailoverManager {
             }
         });
 
-        tracing::info!("健康检查已启动，间隔: {}秒", self.config.health_check_interval_secs);
+        tracing::info!("Health check started, interval: {} seconds", self.config.health_check_interval_secs);
     }
 
     async fn check_provider_health(
@@ -145,7 +145,7 @@ impl FailoverManager {
                 Ok(Ok(response)) => {
                     let latency = start.elapsed().as_millis() as u64;
                     if response.status().is_success() {
-                        tracing::debug!("提供商 {} 健康检查成功，延迟: {}ms", name, latency);
+                        tracing::debug!("Provider {} health check succeeded, latency: {}ms", name, latency);
                         return HealthCheckResult {
                             provider_name: name.to_string(),
                             is_healthy: true,
@@ -161,12 +161,12 @@ impl FailoverManager {
                     last_error = Some(e.to_string());
                 }
                 Err(_) => {
-                    last_error = Some("健康检查超时".to_string());
+                    last_error = Some("Health check timeout".to_string());
                 }
             }
         }
 
-        tracing::warn!("提供商 {} 健康检查失败: {:?}", name, last_error);
+        tracing::warn!("Provider {} health check failed: {:?}", name, last_error);
         HealthCheckResult {
             provider_name: name.to_string(),
             is_healthy: false,
@@ -195,12 +195,12 @@ impl FailoverManager {
     pub async fn manual_switch(&self, provider_name: &str) -> Result<(), String> {
         let providers = self.providers.read().await;
         if !providers.iter().any(|(name, _)| name == provider_name) {
-            return Err(format!("提供商不存在: {}", provider_name));
+            return Err(format!("Provider not found: {}", provider_name));
         }
         drop(providers);
         let mut active = self.active_provider.write().await;
         *active = Some(provider_name.to_string());
-        tracing::info!("手动切换到提供商: {}", provider_name);
+        tracing::info!("Manual switch to provider: {}", provider_name);
         Ok(())
     }
 }

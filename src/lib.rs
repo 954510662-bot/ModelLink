@@ -17,6 +17,7 @@ mod server;
 mod stream;
 mod translator;
 mod validation;
+mod utils;
 mod wizard;
 
 pub use audit::{AuditEntry, AuditLogger, MetricsCollector, MetricsSnapshot};
@@ -37,6 +38,7 @@ pub use rate_limit::{RateLimitConfig, RateLimiter, RateLimitState, rate_limit_mi
 pub use server::start_server;
 pub use stream::*;
 pub use translator::{ParameterTranslator, TranslateResult, translate_request_for_model};
+pub use utils::{convert_headers, sanitize_log_input, generate_request_id};
 pub use validation::RequestValidator;
 pub use wizard::{ConfigWizard, WizardAnswers, ProviderType, QuickSetup};
 

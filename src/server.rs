@@ -5,7 +5,7 @@ use std::sync::Arc;
 use tokio::net::TcpListener;
 use tokio::signal;
 
-use crate::{config::ConfigManager, config_watcher::ConfigHotReload, proxy::create_router};
+use crate::{config::ConfigManager, config_watcher::ConfigHotReload, proxy::create_router, http_client::HttpClientPool, rate_limit::RateLimiter};
 
 pub async fn start_server(
     config_path: Option<PathBuf>,
@@ -15,6 +15,10 @@ pub async fn start_server(
     let config_manager = Arc::new(ConfigManager::new(config_path).await?);
     let config = config_manager.get().await;
     
+    let http_pool = Arc::new(HttpClientPool::new(http_client::HttpClientConfig::default()));
+    
+    let rate_limiter = Arc::new(RateLimiter::new(rate_limit::RateLimitConfig::default()));
+    
     let listen_host = host.unwrap_or_else(|| config.server.host.clone());
     let listen_port = port.unwrap_or(config.server.port);
     
@@ -23,16 +27,16 @@ pub async fn start_server(
     let config_manager_for_watcher = config_manager.clone();
     let mut hot_reload = ConfigHotReload::new(config_manager_for_watcher)?;
     
-    let router = create_router(config_manager.clone()).await;
+    let router = create_router(config_manager.clone(), http_pool, rate_limiter).await;
     
-    tracing::info!("🚀 ModelLink 服务启动");
-    tracing::info!("监听地址: http://{}", addr);
-    tracing::info!("配置文件: {}", config_manager.get_path().display());
-    tracing::info!("已加载 {} 个提供商, {} 个模型映射", 
+    tracing::info!("ModelLink service starting");
+    tracing::info!("Listening on: http://{}", addr);
+    tracing::info!("Config file: {}", config_manager.get_path().display());
+    tracing::info!("Loaded {} providers, {} model mappings", 
         config.providers.len(), 
         config.mappings.len()
     );
-    tracing::info!("✅ 配置热加载已启用，配置文件变更将在 2 秒内自动应用");
+    tracing::info!("Hot config reload enabled - changes will apply within 2 seconds");
     
     let listener = TcpListener::bind(&addr).await?;
     
@@ -68,5 +72,5 @@ async fn shutdown_signal() {
         _ = terminate => {},
     }
 
-    tracing::info!("🛑 正在关闭服务...");
+    tracing::info!("Shutting down service...");
 }

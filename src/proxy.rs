@@ -17,16 +17,25 @@ use crate::{
     metrics::{create_metrics_router, MetricsRecorder},
     stream::{forward_streaming_request, transform_openai_request},
     audit::MetricsCollector,
+    utils::convert_headers,
+    validation::RequestValidator,
+    rate_limit::{RateLimiter, RateLimitConfig},
+    http_client::HttpClientPool,
 };
 
 pub struct AppState {
     pub config: Arc<ConfigManager>,
-    #[allow(dead_code)]
     pub metrics: Arc<MetricsCollector>,
     pub recorder: Arc<MetricsRecorder>,
+    pub http_pool: Arc<HttpClientPool>,
+    pub rate_limiter: Arc<RateLimiter>,
 }
 
-pub async fn create_router(config_manager: Arc<ConfigManager>) -> Router {
+pub async fn create_router(
+    config_manager: Arc<ConfigManager>,
+    http_pool: Arc<HttpClientPool>,
+    rate_limiter: Arc<RateLimiter>,
+) -> Router {
     let metrics_collector = Arc::new(MetricsCollector::new());
     let metrics_recorder = Arc::new(MetricsRecorder::new(metrics_collector.clone()));
     
@@ -34,6 +43,8 @@ pub async fn create_router(config_manager: Arc<ConfigManager>) -> Router {
         config: config_manager,
         metrics: metrics_collector.clone(),
         recorder: metrics_recorder.clone(),
+        http_pool,
+        rate_limiter,
     });
 
     let metrics_router = create_metrics_router(metrics_collector).await;
@@ -44,6 +55,10 @@ pub async fn create_router(config_manager: Arc<ConfigManager>) -> Router {
         .route("/health", get(health_handler))
         .route("/ready", get(ready_handler))
         .with_state(app_state)
+        .layer(axum::middleware::from_fn_with_state(
+            Arc::new(RateLimitConfig::default()),
+            rate_limit::rate_limit_middleware,
+        ))
         .merge(metrics_router)
 }
 
@@ -64,6 +79,11 @@ async fn chat_completions_handler(
             return Err(ModelLinkError::ValidationError(format!("Invalid request body: {}", e)));
         }
     };
+    
+    if let Err(e) = RequestValidator::validate_chat_completion_request(&request_body) {
+        state.recorder.end_request(&request_id, None, true).await;
+        return Err(e);
+    }
     
     let model_name = match request_body.get("model").and_then(|v| v.as_str()) {
         Some(name) => name,
@@ -116,7 +136,7 @@ async fn chat_completions_handler(
         }
         result
     } else {
-        let result = forward_non_streaming_request(&config, model_name, transformed_body, upstream_url, request_headers).await;
+        let result = forward_non_streaming_request(&state.http_pool, transformed_body, upstream_url, request_headers).await;
         if result.is_err() {
             state.recorder.end_request(&request_id, None, true).await;
         } else {
@@ -136,13 +156,18 @@ async fn anthropic_messages_handler(
     
     let config = state.config.get().await;
     
-    let _request_body: serde_json::Value = match serde_json::from_str(&body) {
+    let request_body: serde_json::Value = match serde_json::from_str(&body) {
         Ok(body) => body,
         Err(e) => {
             state.recorder.end_request(&request_id, None, true).await;
             return Err(ModelLinkError::ValidationError(format!("Invalid request body: {}", e)));
         }
     };
+    
+    if let Err(e) = RequestValidator::validate_anthropic_message_request(&request_body) {
+        state.recorder.end_request(&request_id, None, true).await;
+        return Err(e);
+    }
     
     let provider = match config.providers.iter().next() {
         Some(p) => p,
@@ -161,7 +186,7 @@ async fn anthropic_messages_handler(
         }
     }
     
-    let client = reqwest::Client::new();
+    let client = state.http_pool.get_client();
     
     let response = match client
         .post(&upstream_url)
@@ -205,13 +230,12 @@ async fn anthropic_messages_handler(
 }
 
 async fn forward_non_streaming_request(
-    _config: &crate::config::Config,
-    _model_name: &str,
+    http_pool: &Arc<HttpClientPool>,
     request_body: serde_json::Value,
     upstream_url: String,
     headers: HeaderMap,
 ) -> Result<Response, ModelLinkError> {
-    let client = reqwest::Client::new();
+    let client = http_pool.get_client();
     
     let response = client
         .post(&upstream_url)
@@ -231,21 +255,4 @@ async fn forward_non_streaming_request(
     
     let body = response.bytes().await.map_err(|e| ModelLinkError::NetworkError(e.to_string()))?;
     Ok(Response::new(Body::from(body)))
-}
-
-fn convert_headers(headers: &HeaderMap) -> reqwest::header::HeaderMap {
-    let mut result = reqwest::header::HeaderMap::new();
-    for (key, value) in headers.iter() {
-        let key_lower = key.as_str().to_lowercase();
-        if key_lower != "host" && key_lower != "content-length" {
-            if let Ok(name) = reqwest::header::HeaderName::try_from(key.as_str()) {
-                if let Ok(val) = value.to_str() {
-                    if let Ok(parsed) = val.parse() {
-                        result.insert(name, parsed);
-                    }
-                }
-            }
-        }
-    }
-    result
 }

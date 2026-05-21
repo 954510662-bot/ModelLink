@@ -108,19 +108,19 @@ async fn init_config(output: Option<PathBuf>) -> anyhow::Result<()> {
     let content = include_str!("../config-template.yaml");
     tokio::fs::write(&path, content).await?;
     
-    println!("✅ 配置文件已生成: {}", path.display());
+    println!("Config file generated: {}", path.display());
     Ok(())
 }
 
 async fn validate_config(config_path: Option<PathBuf>) -> anyhow::Result<()> {
     let config = crate::config::ConfigManager::new(config_path).await?;
-    println!("✅ 配置文件验证通过");
-    println!("配置路径: {}", config.get_path().display());
+    println!("Config file validation passed");
+    println!("Config path: {}", config.get_path().display());
     
     let cfg = config.get().await;
-    println!("服务器地址: {}:{}", cfg.server.host, cfg.server.port);
-    println!("提供商数量: {}", cfg.providers.len());
-    println!("模型映射数量: {}", cfg.mappings.len());
+    println!("Server address: {}:{}", cfg.server.host, cfg.server.port);
+    println!("Provider count: {}", cfg.providers.len());
+    println!("Model mapping count: {}", cfg.mappings.len());
     
     Ok(())
 }
@@ -132,31 +132,31 @@ fn print_config_path() -> anyhow::Result<()> {
 }
 
 async fn run_doctor() -> anyhow::Result<()> {
-    println!("🧙 ModelLink 诊断工具\n");
+    println!("ModelLink Diagnostics\n");
     
-    println!("检查 Rust 环境...");
+    println!("Checking Rust environment...");
     match rustc_version::version() {
-        Ok(version) => println!("  ✅ Rust 版本: {}", version),
-        Err(_) => println!("  ⚠️  无法获取 Rust 版本"),
+        Ok(version) => println!("  [OK] Rust version: {}", version),
+        Err(_) => println!("  [WARN] Cannot get Rust version"),
     }
     
-    println!("检查配置文件...");
+    println!("Checking config file...");
     let config_path = crate::config::ConfigManager::default_config_path();
     if config_path.exists() {
-        println!("  ✅ 配置文件存在: {}", config_path.display());
+        println!("  [OK] Config file exists: {}", config_path.display());
     } else {
-        println!("  ⚠️  配置文件不存在，将使用默认配置");
+        println!("  [WARN] Config file not found, will use default config");
     }
     
-    println!("检查端口占用...");
+    println!("Checking port availability...");
     let port = 9191;
     if is_port_available(port).await {
-        println!("  ✅ 端口 {} 可用", port);
+        println!("  [OK] Port {} is available", port);
     } else {
-        println!("  ⚠️  端口 {} 已被占用", port);
+        println!("  [WARN] Port {} is in use", port);
     }
     
-    println!("\n✅ 诊断完成");
+    println!("\nDiagnostics complete");
     Ok(())
 }
 
@@ -177,10 +177,10 @@ async fn handle_update(check_only: bool, no_confirm: bool) -> anyhow::Result<()>
     use self_update::backends::github::Update;
     use self_update::update::Release;
     
-    println!("🔄 ModelLink 自动更新\n");
+    println!("ModelLink Auto Update\n");
     
     let current_version = cargo_crate_version!();
-    println!("当前版本: v{}", current_version);
+    println!("Current version: v{}", current_version);
     
     let release = Update::configure()
         .repo_owner("954510662-bot")
@@ -190,42 +190,42 @@ async fn handle_update(check_only: bool, no_confirm: bool) -> anyhow::Result<()>
         .current_version(current_version)
         .build()?;
     
-    println!("检查更新...");
+    println!("Checking for updates...");
     let latest_release = release.get_latest_release()?;
     
     if latest_release.version == current_version {
-        println!("✅ 已是最新版本！");
+        println!("Already up to date!");
         return Ok(());
     }
     
-    println!("发现新版本: v{}", latest_release.version);
-    println!("发布日期: {}", latest_release.date);
-    println!("\n发布说明:\n{}", latest_release.body);
+    println!("New version found: v{}", latest_release.version);
+    println!("Release date: {}", latest_release.date);
+    println!("\nRelease notes:\n{}", latest_release.body);
     
     if check_only {
         return Ok(());
     }
     
     if !no_confirm {
-        println!("\n是否继续更新? (y/N)");
+        println!("\nContinue with update? (y/N)");
         let mut input = String::new();
         std::io::stdin().read_line(&mut input)?;
         
         if !input.trim().eq_ignore_ascii_case("y") {
-            println!("更新已取消");
+            println!("Update cancelled");
             return Ok(());
         }
     }
     
-    println!("\n开始更新...");
+    println!("\nStarting update...");
     let status = release.update()?;
     
     match status {
         self_update::Status::UpToDate => {
-            println!("✅ 已是最新版本！");
+            println!("Already up to date!");
         }
         self_update::Status::Updated(v) => {
-            println!("✅ 更新成功！已升级到 v{}", v);
+            println!("Update successful! Now running v{}", v);
         }
     }
     
