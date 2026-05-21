@@ -19,7 +19,8 @@ path = "src/bin/model_link.rs"
 
 [dependencies]
 anyhow = "1"
-axum = "0.7"
+axum = { version = "0.7", features = ["ws"] }
+axum-extra = { version = "0.9", features = ["typed-header", "cookie"] }
 hyper = { version = "1", features = ["full"] }
 reqwest = { version = "0.12", features = ["json", "stream"] }
 tokio = { version = "1", features = ["full"] }
@@ -42,13 +43,21 @@ dirs = "5"
 uuid = { version = "1", features = ["v4"] }
 rustc_version = "0.4"
 self_update = { version = "0.40", optional = true }
+jsonschema = "0.18"
+async-trait = "0.1"
+redis = { version = "0.25", optional = true }
+async-graphql = { version = "7", optional = true }
 
 [features]
-default = []
+default = ["websocket"]
 update = ["self_update"]
+websocket = ["axum/ws"]
+distributed = ["redis"]
+graphql = ["async-graphql"]
 
 [dev-dependencies]
 reqwest = { version = "0.12", features = ["json", "stream"] }
 mockito = "1"
 tokio-test = "0.4"
 tempfile = "3"
+criterion = "0.5"

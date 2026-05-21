@@ -11,13 +11,16 @@ mod metrics;
 mod migration;
 mod mock;
 mod models;
+mod provider;
 mod proxy;
 mod rate_limit;
+mod schema;
 mod server;
 mod stream;
 mod translator;
-mod validation;
 mod utils;
+mod validation;
+mod websocket;
 mod wizard;
 
 pub use audit::{AuditEntry, AuditLogger, MetricsCollector, MetricsSnapshot};
@@ -33,13 +36,16 @@ pub use migration::{ConfigMigrator, ConfigVersion, MigratorState};
 pub use metrics::{MetricsRecorder, MetricsState, RecorderState, create_metrics_router};
 pub use mock::{MockMode, MockResponse, MockServer};
 pub use models::*;
+pub use provider::{Provider, OpenAIProvider, AnthropicProvider, GeminiProvider, DeepSeekProvider, CohereProvider, create_provider};
 pub use proxy::create_router;
 pub use rate_limit::{RateLimitConfig, RateLimiter, RateLimitState, rate_limit_middleware};
+pub use schema::{ConfigValidator, get_config_schema, validate_config};
 pub use server::start_server;
 pub use stream::*;
 pub use translator::{ParameterTranslator, TranslateResult, translate_request_for_model};
 pub use utils::{convert_headers, sanitize_log_input, generate_request_id};
 pub use validation::RequestValidator;
+pub use websocket::{WebSocketState, create_websocket_router};
 pub use wizard::{ConfigWizard, WizardAnswers, ProviderType, QuickSetup};
 
 #[cfg(test)]
